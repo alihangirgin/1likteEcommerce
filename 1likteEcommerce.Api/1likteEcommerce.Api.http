@@ -1,0 +1,6 @@
+@_1likteEcommerce.Api_HostAddress = http://localhost:5017
+
+GET {{_1likteEcommerce.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
