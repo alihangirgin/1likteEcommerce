@@ -12,7 +12,7 @@ namespace _1likteEcommerce.Core.Repositories
         Task<TEntity> AddAsync(TEntity entity);
         Task<TEntity?> UpdateAsync(TEntity entity);
         Task<IEnumerable<TEntity>> GetAllAsync();
-        Task<TEntity?> GetByIdAsync(int id);
+        Task<TEntity?> GetByIdAsync(int id, string? include = null);
         Task DeleteAsync(int id);
     }
 }

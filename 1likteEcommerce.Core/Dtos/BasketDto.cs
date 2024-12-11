@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace _1likteEcommerce.Core.Repositories
+namespace _1likteEcommerce.Core.Dtos
 {
-    public interface IBasketRepository : IRepository<Basket>
+    public class BasketDto : Dto
     {
-        Task<Basket?> GetBasketByUserId(int userId);
+        public int UserId { get; set; }
+        public List<BasketItemDto> BasketItems { get; set; }
     }
 }
-

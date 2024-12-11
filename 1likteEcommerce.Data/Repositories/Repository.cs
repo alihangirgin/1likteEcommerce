@@ -33,9 +33,14 @@ namespace _1likteEcommerce.Data.Repositories
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<TEntity?> GetByIdAsync(int id)
+        public async Task<TEntity?> GetByIdAsync(int id, string? include = null)
         {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+            var query = _dbSet.AsQueryable();
+            if (!string.IsNullOrEmpty(include))
+            {
+                query = query.Include(include);
+            }
+            return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<TEntity?> UpdateAsync(TEntity entity)
@@ -45,7 +50,8 @@ namespace _1likteEcommerce.Data.Repositories
                 return null;
 
             entity.UpdatedAt = DateTime.Now;
-            _dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
+            _dbSet.Update(entity);
+            //_dbContext.Entry(existingEntity).CurrentValues.SetValues(entity);
             return existingEntity;  
         }
 
