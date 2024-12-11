@@ -1,3 +1,8 @@
+using _1likteEcommerce.Data.DataAccess;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+var connectionString = builder.Configuration.GetConnectionString("1likteTestDb");
+
+
+
+
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+{
+    opt.User.RequireUniqueEmail = true;
+}).AddEntityFrameworkStores<AppDbContext>();
+
 
 var app = builder.Build();
 
