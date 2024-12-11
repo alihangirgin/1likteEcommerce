@@ -11,5 +11,6 @@ namespace _1likteEcommerce.Core.Models
     {
         public int BasketId { get; set; }
         public virtual Basket Basket { get; set; }
+        public string? PhotoPath { get; set; }
     }
 }

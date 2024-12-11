@@ -1,6 +1,8 @@
 ﻿using _1likteEcommerce.Api.Models;
+using _1likteEcommerce.Core.Models;
 using _1likteEcommerce.Core.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +13,16 @@ namespace _1likteEcommerce.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IUserService _userService;
-        public UserController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IUserService userService)
+        private readonly IFileService _fileService;
+        public UserController(SignInManager<User> signInManager, UserManager<User> userManager, IUserService userService, IFileService fileService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _userService = userService;
+            _fileService = fileService;
         }
 
         [HttpPost("register")]
@@ -26,7 +30,7 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Username, Email = model.Email };
+                var user = new User { UserName = model.Username, Email = model.Email, Basket = new Basket() };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -61,12 +65,12 @@ namespace _1likteEcommerce.Api.Controllers
         }
 
         [Authorize]
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser(UpdateUserModel model)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateUser(string userId, UpdateUserModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByIdAsync(model.Id);
+                var user = await _userManager.FindByIdAsync(userId);
                 if (user == null) return NotFound("User not found");
 
                 user.Email = model.Email ?? user.Email;
@@ -88,6 +92,56 @@ namespace _1likteEcommerce.Api.Controllers
         {
             var users = await _userManager.Users.ToListAsync();
             return Ok(users);
+        }
+
+        [Authorize]
+        [HttpPost("{userId}/upload-photo")]
+        public async Task<IActionResult> UploadProfilePhoto(string userId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Invalid file");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
+
+            var extension = Path.GetExtension(file.FileName);
+            if(extension != ".png" && extension != ".jpg" && extension != ".jpeg") return BadRequest("Invalid file type");
+
+            await using MemoryStream memoryStream = new();
+            await file.CopyToAsync(memoryStream);
+            byte[] bytes = memoryStream.ToArray();
+            var uniqueFileName = $"{userId}_{extension}";
+            await _fileService.UploadFileAsync(bytes, uniqueFileName);
+
+            user.PhotoPath = uniqueFileName;
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("{userId}/download-photo")]
+        public async Task<IActionResult> DownloadProfilePhoto(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
+
+            if (string.IsNullOrEmpty(user.PhotoPath)) return BadRequest("User photo not found");
+
+            var bytes = await _fileService.GetFileBytesAsync(user.PhotoPath);
+            if(bytes == null || bytes.Length == 0) BadRequest("User photo not found");
+
+            string contentType = Path.GetExtension(user.PhotoPath) switch
+            {
+                ".jpg" => "image/jpeg",
+                ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                _ => "application/octet-stream"
+            };
+            var fileName = Path.GetFileName(user.PhotoPath);
+            return File(bytes, contentType, fileName);
         }
     }
 }

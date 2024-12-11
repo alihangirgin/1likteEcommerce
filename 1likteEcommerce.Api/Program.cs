@@ -1,4 +1,5 @@
 using _1likteEcommerce.Business.Services;
+using _1likteEcommerce.Core.Models;
 using _1likteEcommerce.Core.Services;
 using _1likteEcommerce.Core.UnitOfWork;
 using _1likteEcommerce.Data.DataAccess;
@@ -52,7 +53,7 @@ builder.Services.AddSwaggerGen(c =>
 var connectionString = builder.Configuration.GetConnectionString("1likteTestDb");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt =>
+builder.Services.AddIdentity<User, IdentityRole>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<AppDbContext>();
@@ -79,6 +80,7 @@ builder.Services.AddScoped<IBasketService, BasketService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
@@ -103,5 +105,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseStaticFiles();
 
 app.Run();
