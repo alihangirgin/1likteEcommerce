@@ -3,6 +3,7 @@ using _1likteEcommerce.Core.Models;
 using _1likteEcommerce.Core.Services;
 using _1likteEcommerce.Core.UnitOfWork;
 using _1likteEcommerce.Data.DataAccess;
+using _1likteEcommerce.Data.Seeder;
 using _1likteEcommerce.Data.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -87,6 +88,20 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        await AppDbSeeder.SeedAsync(serviceProvider);
+    }
+    catch (Exception ex)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

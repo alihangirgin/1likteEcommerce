@@ -19,10 +19,10 @@ namespace _1likteEcommerce.Business.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddProductToBasketAsync(string userId, BasketAddProductDto model)
+        public async Task<bool> AddProductToBasketAsync(string userId, BasketAddProductDto model)
         {
             var basketEntity = await _unitOfWork.Baskets.GetBasketByUserId(userId);
-            if (basketEntity == null) return;
+            if (basketEntity == null) return false;
 
             var existingBasketItem = basketEntity.BasketItems.FirstOrDefault(x => x.ProductId == model.ProductId);
             if (existingBasketItem == null)
@@ -36,15 +36,17 @@ namespace _1likteEcommerce.Business.Services
 
             await _unitOfWork.Baskets.UpdateAsync(basketEntity);
             await _unitOfWork.Commit();
+
+            return true;
         }
 
-        public async Task RemoveProductFromBasketAsync(string userId, BasketAddProductDto model)
+        public async Task<bool> RemoveProductFromBasketAsync(string userId, BasketAddProductDto model)
         {
             var basketEntity = await _unitOfWork.Baskets.GetBasketByUserId(userId);
-            if (basketEntity == null) return;
+            if (basketEntity == null) return false;
 
             var existingBasketItem = basketEntity.BasketItems.FirstOrDefault(x => x.ProductId == model.ProductId);
-            if (existingBasketItem == null) return;
+            if (existingBasketItem == null) return false;
 
             if (existingBasketItem.Quantity <= 1)
                 basketEntity.BasketItems.Remove(existingBasketItem);
@@ -53,6 +55,8 @@ namespace _1likteEcommerce.Business.Services
 
             await _unitOfWork.Baskets.UpdateAsync(basketEntity);
             await _unitOfWork.Commit();
+
+            return true;
         }
 
         public async Task<BasketDto?> GetBasketAsync(string userId)

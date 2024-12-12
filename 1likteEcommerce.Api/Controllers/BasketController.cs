@@ -24,7 +24,8 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _basketService.AddProductToBasketAsync(userId, model);
+                var result = await _basketService.AddProductToBasketAsync(userId, model);
+                if (!result) return BadRequest("product cannot added to basket");
                 return Ok("product added to basket");
             }
 
@@ -36,7 +37,8 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _basketService.RemoveProductFromBasketAsync(userId, model);
+                var result = await _basketService.RemoveProductFromBasketAsync(userId, model);
+                if (!result) return BadRequest("product cannot removed from the basket");
                 return Ok("product removed from the basket");
             }
              

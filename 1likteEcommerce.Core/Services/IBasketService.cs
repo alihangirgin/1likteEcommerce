@@ -9,8 +9,8 @@ namespace _1likteEcommerce.Core.Services
 {
     public interface IBasketService
     {
-        Task AddProductToBasketAsync(string userId, BasketAddProductDto model);
-        Task RemoveProductFromBasketAsync(string userId, BasketAddProductDto model);
+        Task<bool> AddProductToBasketAsync(string userId, BasketAddProductDto model);
+        Task<bool> RemoveProductFromBasketAsync(string userId, BasketAddProductDto model);
         Task<BasketDto?> GetBasketAsync(string userId);
     }
 }
