@@ -2,7 +2,6 @@
 using _1likteEcommerce.Core.Models;
 using _1likteEcommerce.Core.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +29,7 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Username, Email = model.Email, Basket = new Basket() };
+                var user = new User { UserName = model.Username, Email = model.Email, UserBasket = new Basket() };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -39,7 +38,7 @@ namespace _1likteEcommerce.Api.Controllers
                 }
                 return BadRequest(result.Errors);
             }
-            return BadRequest();
+            return BadRequest(ModelState);
         }
 
         [HttpPost("login")]

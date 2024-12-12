@@ -19,7 +19,7 @@ namespace _1likteEcommerce.Business.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddProductToBasketAsync(int userId, BasketAddProductDto model)
+        public async Task AddProductToBasketAsync(string userId, BasketAddProductDto model)
         {
             var basketEntity = await _unitOfWork.Baskets.GetBasketByUserId(userId);
             if (basketEntity == null) return;
@@ -38,7 +38,7 @@ namespace _1likteEcommerce.Business.Services
             await _unitOfWork.Commit();
         }
 
-        public async Task RemoveProductFromBasketAsync(int userId, BasketAddProductDto model)
+        public async Task RemoveProductFromBasketAsync(string userId, BasketAddProductDto model)
         {
             var basketEntity = await _unitOfWork.Baskets.GetBasketByUserId(userId);
             if (basketEntity == null) return;
@@ -55,13 +55,13 @@ namespace _1likteEcommerce.Business.Services
             await _unitOfWork.Commit();
         }
 
-        public async Task<BasketDto?> GetBasketAsync(int id)
+        public async Task<BasketDto?> GetBasketAsync(string userId)
         {
-            var basket = await _unitOfWork.Baskets.GetByIdAsync(id, "BasketItems");
+            var basket = await _unitOfWork.Baskets.GetBasketByUserId(userId);
             if (basket == null) return null;
             return new BasketDto()
             {
-                Id = id,
+                Id = basket.Id,
                 UpdatedAt = basket.UpdatedAt,
                 UserId = basket.UserId,
                 BasketItems = basket.BasketItems.Select(x => new BasketItemDto()

@@ -2,11 +2,6 @@
 using _1likteEcommerce.Core.Models;
 using _1likteEcommerce.Core.Services;
 using _1likteEcommerce.Core.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _1likteEcommerce.Business.Services
 {
@@ -90,7 +85,7 @@ namespace _1likteEcommerce.Business.Services
             }).ToList();
         }
 
-        public async Task DeletCategoryAsync(int id)
+        public async Task DeleteCategoryAsync(int id)
         {
             await _unitOfWork.Categories.DeleteAsync(id);
             await _unitOfWork.Commit();

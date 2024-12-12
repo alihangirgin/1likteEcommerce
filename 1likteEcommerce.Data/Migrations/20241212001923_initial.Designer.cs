@@ -12,7 +12,7 @@ using _1likteEcommerce.Data.DataAccess;
 namespace _1likteEcommerce.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241211152153_initial")]
+    [Migration("20241212001923_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -241,10 +241,17 @@ namespace _1likteEcommerce.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Baskets");
                 });
@@ -268,6 +275,9 @@ namespace _1likteEcommerce.Data.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -296,6 +306,9 @@ namespace _1likteEcommerce.Data.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -327,6 +340,9 @@ namespace _1likteEcommerce.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -341,8 +357,8 @@ namespace _1likteEcommerce.Data.Migrations
                     b.Property<int>("BasketId")
                         .HasColumnType("integer");
 
-                    b.HasIndex("BasketId")
-                        .IsUnique();
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("text");
 
                     b.HasDiscriminator().HasValue("User");
                 });
@@ -398,6 +414,17 @@ namespace _1likteEcommerce.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("_1likteEcommerce.Core.Models.Basket", b =>
+                {
+                    b.HasOne("_1likteEcommerce.Core.Models.User", "User")
+                        .WithOne("UserBasket")
+                        .HasForeignKey("_1likteEcommerce.Core.Models.Basket", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("_1likteEcommerce.Core.Models.BasketItem", b =>
                 {
                     b.HasOne("_1likteEcommerce.Core.Models.Basket", "Basket")
@@ -428,23 +455,9 @@ namespace _1likteEcommerce.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("_1likteEcommerce.Core.Models.User", b =>
-                {
-                    b.HasOne("_1likteEcommerce.Core.Models.Basket", "Basket")
-                        .WithOne("User")
-                        .HasForeignKey("_1likteEcommerce.Core.Models.User", "BasketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Basket");
-                });
-
             modelBuilder.Entity("_1likteEcommerce.Core.Models.Basket", b =>
                 {
                     b.Navigation("BasketItems");
-
-                    b.Navigation("User")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("_1likteEcommerce.Core.Models.Category", b =>
@@ -455,6 +468,12 @@ namespace _1likteEcommerce.Data.Migrations
             modelBuilder.Entity("_1likteEcommerce.Core.Models.Product", b =>
                 {
                     b.Navigation("BasketItems");
+                });
+
+            modelBuilder.Entity("_1likteEcommerce.Core.Models.User", b =>
+                {
+                    b.Navigation("UserBasket")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

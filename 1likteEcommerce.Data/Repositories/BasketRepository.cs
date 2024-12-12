@@ -15,7 +15,7 @@ namespace _1likteEcommerce.Data.Repositories
         public BasketRepository(AppDbContext dbContext) : base(dbContext)
         {
         }
-        public async Task<Basket?> GetBasketByUserId(int userId)
+        public async Task<Basket?> GetBasketByUserId(string userId)
         {
             return await _dbSet.Include(x=> x.BasketItems).FirstOrDefaultAsync(x => x.UserId == userId);
         }

@@ -13,6 +13,6 @@ namespace _1likteEcommerce.Core.Services
         Task UpdateCategoryAsync(int id, CategoryCreateDto model);
         Task<CategoryDto?> GetCategoryAsync(int id);
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
-        Task DeletCategoryAsync(int id);
+        Task DeleteCategoryAsync(int id);
     }
 }

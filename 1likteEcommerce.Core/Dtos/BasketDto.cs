@@ -9,7 +9,7 @@ namespace _1likteEcommerce.Core.Dtos
 {
     public class BasketDto : Dto
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public List<BasketItemDto> BasketItems { get; set; }
     }
 }
