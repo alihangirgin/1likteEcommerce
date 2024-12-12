@@ -131,7 +131,8 @@ namespace _1likteEcommerce.Api.UnitTests
             fileMock.Setup(f => f.CopyToAsync(It.IsAny<Stream>(), default)).Returns(Task.CompletedTask);
             fileMock.Setup(f => f.Length).Returns(memoryStream.Length);
             fileMock.Setup(f => f.OpenReadStream()).Returns(memoryStream);
-            fileMock.Setup(f => f.ContentType).Returns("image/png"); 
+            fileMock.Setup(f => f.ContentType).Returns("image/png");
+            fileMock.Setup(f => f.FileName).Returns("testfile.png");
 
             _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(user);
             _fileServiceMock.Setup(x => x.UploadFileAsync(It.IsAny<byte[]>(), It.IsAny<string>())).Returns(Task.CompletedTask);
