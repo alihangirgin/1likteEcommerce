@@ -9,10 +9,10 @@ namespace _1likteEcommerce.Core.Services
 {
     public interface ICategoryService
     {
-        Task AddCategoryAsync(CategoryCreateDto model);
-        Task UpdateCategoryAsync(int id, CategoryCreateDto model);
+        Task<bool> AddCategoryAsync(CategoryCreateDto model);
+        Task<bool> UpdateCategoryAsync(int id, CategoryCreateDto model);
         Task<CategoryDto?> GetCategoryAsync(int id);
         Task<IEnumerable<CategoryDto>> GetCategoriesAsync();
-        Task DeleteCategoryAsync(int id);
+        Task<bool> DeleteCategoryAsync(int id);
     }
 }

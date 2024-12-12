@@ -10,6 +10,7 @@ namespace _1likteEcommerce.Core.Repositories
     public interface IBasketRepository : IRepository<Basket>
     {
         Task<Basket?> GetBasketByUserId(string userId);
+        Task<Basket?> GetBasketWithProductsByUserId(string userId);
     }
 }
 

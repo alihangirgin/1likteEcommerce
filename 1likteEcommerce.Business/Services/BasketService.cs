@@ -57,7 +57,7 @@ namespace _1likteEcommerce.Business.Services
 
         public async Task<BasketDto?> GetBasketAsync(string userId)
         {
-            var basket = await _unitOfWork.Baskets.GetBasketByUserId(userId);
+            var basket = await _unitOfWork.Baskets.GetBasketWithProductsByUserId(userId);
             if (basket == null) return null;
             return new BasketDto()
             {
@@ -68,6 +68,7 @@ namespace _1likteEcommerce.Business.Services
                 {
                     Id = x.Id,
                     ProductId = x.ProductId,
+                    Product = new ProductDto() { CategoryId = x.Product.CategoryId, Description = x.Product.Description, Id = x.Product.Id, Price = x.Product.Price, Title = x.Product.Title, CreatedAt = x.CreatedAt },
                     Quantity = x.Quantity,
                     UpdatedAt = x.UpdatedAt,
                     CreatedAt = x.CreatedAt,

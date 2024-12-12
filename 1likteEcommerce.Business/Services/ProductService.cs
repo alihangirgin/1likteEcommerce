@@ -2,11 +2,6 @@
 using _1likteEcommerce.Core.Models;
 using _1likteEcommerce.Core.Services;
 using _1likteEcommerce.Core.UnitOfWork;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _1likteEcommerce.Business.Services
 {
@@ -20,8 +15,11 @@ namespace _1likteEcommerce.Business.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddProductAsync(ProductCreateDto model)
+        public async Task<bool> AddProductAsync(ProductCreateDto model)
         {
+            var checkCategory = await _unitOfWork.Categories.CheckAsync(model.CategoryId);
+            if (!checkCategory) return false;
+
             Product productEntity = new()
             {
                 Description = model.Description,
@@ -32,12 +30,16 @@ namespace _1likteEcommerce.Business.Services
             };
             await _unitOfWork.Products.AddAsync(productEntity);
             await _unitOfWork.Commit();
+            return true;
         }
 
-        public async Task UpdateProductAsync(int id, ProductCreateDto model)
+        public async Task<bool> UpdateProductAsync(int id, ProductCreateDto model)
         {
             var productEntity = await _unitOfWork.Products.GetByIdAsync(id);
-            if (productEntity == null) return;
+            if (productEntity == null) return false;
+
+            var checkCategory = await _unitOfWork.Categories.CheckAsync(model.CategoryId);
+            if (!checkCategory) return false;
 
             productEntity.Description = model.Description;
             productEntity.Title = model.Title;
@@ -46,6 +48,8 @@ namespace _1likteEcommerce.Business.Services
 
             await _unitOfWork.Products.UpdateAsync(productEntity);
             await _unitOfWork.Commit();
+
+            return true;
         }
 
         public async Task<ProductDto?> GetProductAsync(int id)
@@ -77,10 +81,15 @@ namespace _1likteEcommerce.Business.Services
             }).ToList();
         }
 
-        public async Task DeletProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(int id)
         {
+            var productEntity = await _unitOfWork.Products.GetByIdAsync(id);
+            if (productEntity == null) return false;
+
             await _unitOfWork.Products.DeleteAsync(id);
             await _unitOfWork.Commit();
+
+            return true;
         }
     }
 }

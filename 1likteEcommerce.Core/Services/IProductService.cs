@@ -9,10 +9,10 @@ namespace _1likteEcommerce.Core.Services
 {
     public interface IProductService
     {
-        Task AddProductAsync(ProductCreateDto model);
-        Task UpdateProductAsync(int id, ProductCreateDto model);
+        Task<bool> AddProductAsync(ProductCreateDto model);
+        Task<bool> UpdateProductAsync(int id, ProductCreateDto model);
         Task<ProductDto?> GetProductAsync(int id);
         Task<IEnumerable<ProductDto>> GetProductsAsync();
-        Task DeletProductAsync(int id);
+        Task<bool> DeleteProductAsync(int id);
     }
 }

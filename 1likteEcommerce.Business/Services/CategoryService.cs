@@ -14,7 +14,7 @@ namespace _1likteEcommerce.Business.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task AddCategoryAsync(CategoryCreateDto model)
+        public async Task<bool> AddCategoryAsync(CategoryCreateDto model)
         {
             Category categoryEntity = new()
             {
@@ -24,18 +24,21 @@ namespace _1likteEcommerce.Business.Services
             };
             await _unitOfWork.Categories.AddAsync(categoryEntity);
             await _unitOfWork.Commit();
+
+            return true;
         }
 
-        public async Task UpdateCategoryAsync(int id, CategoryCreateDto model)
+        public async Task<bool> UpdateCategoryAsync(int id, CategoryCreateDto model)
         {
             var categoryEntity = await _unitOfWork.Categories.GetByIdAsync(id);
-            if (categoryEntity == null) return;
+            if (categoryEntity == null) return false;
 
             categoryEntity.Description = model.Description;
             categoryEntity.Title = model.Title;
  
             await _unitOfWork.Categories.UpdateAsync(categoryEntity);
             await _unitOfWork.Commit();
+            return true;
         }
 
         public async Task<CategoryDto?> GetCategoryAsync(int id)
@@ -49,16 +52,6 @@ namespace _1likteEcommerce.Business.Services
                 Description = category.Description,
                 CreatedAt = category.CreatedAt,
                 UpdatedAt = category.UpdatedAt,
-                Products = category.Products.Select(x => new ProductDto()
-                {
-                    Id = x.Id,
-                    CategoryId = x.CategoryId,
-                    CreatedAt = x.CreatedAt,
-                    UpdatedAt = x.UpdatedAt,
-                    Description = x.Description,
-                    Price = x.Price,
-                    Title = x.Title 
-                }).ToList()
             };
         }
 
@@ -72,23 +65,18 @@ namespace _1likteEcommerce.Business.Services
                 Description = x.Description,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
-                Products = x.Products.Select(x => new ProductDto()
-                {
-                    Id = x.Id,
-                    CategoryId = x.CategoryId,
-                    CreatedAt = x.CreatedAt,
-                    UpdatedAt = x.UpdatedAt,
-                    Description = x.Description,
-                    Price = x.Price,
-                    Title = x.Title
-                }).ToList()
             }).ToList();
         }
 
-        public async Task DeleteCategoryAsync(int id)
+        public async Task<bool> DeleteCategoryAsync(int id)
         {
+            var categoryEntity = await _unitOfWork.Categories.GetByIdAsync(id);
+            if (categoryEntity == null) return false;
+
             await _unitOfWork.Categories.DeleteAsync(id);
             await _unitOfWork.Commit();
+
+            return true;
         }
     }
 }

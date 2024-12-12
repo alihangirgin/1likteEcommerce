@@ -2,11 +2,6 @@
 using _1likteEcommerce.Core.Repositories;
 using _1likteEcommerce.Data.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _1likteEcommerce.Data.Repositories
 {
@@ -60,6 +55,11 @@ namespace _1likteEcommerce.Data.Repositories
             var entity = await GetByIdAsync(id);
             if (entity != null)
                 _dbSet.Remove(entity);
+        }
+
+        public async Task<bool> CheckAsync(int id)
+        {
+            return await _dbSet.AnyAsync(x=> x.Id == id);
         }
     }
 }

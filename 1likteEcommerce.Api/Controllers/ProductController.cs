@@ -23,7 +23,8 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _productService.AddProductAsync(model);
+                var result = await _productService.AddProductAsync(model);
+                if(!result) return BadRequest("product cannot created");
                 return Ok("product created");
             }
 
@@ -35,8 +36,9 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _productService.UpdateProductAsync(productId, model);
-                return Ok("product created");
+                var result = await _productService.UpdateProductAsync(productId, model);
+                if (!result) return BadRequest("product cannot updated");
+                return Ok("product updated");
             }
 
             return BadRequest(ModelState);
@@ -45,7 +47,8 @@ namespace _1likteEcommerce.Api.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> DeleteProduct(int productId)
         {
-            await _productService.DeletProductAsync(productId);
+            var result = await _productService.DeleteProductAsync(productId);
+            if (!result) return BadRequest("product cannot deleted");
             return Ok("product deleted");
         }
 

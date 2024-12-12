@@ -11,6 +11,5 @@ namespace _1likteEcommerce.Core.Dtos
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public virtual List<ProductDto> Products { get; set; }
     }
 }

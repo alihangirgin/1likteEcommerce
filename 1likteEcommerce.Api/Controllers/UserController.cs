@@ -29,7 +29,7 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Username, Email = model.Email, UserBasket = new Basket() };
+                var user = new User { UserName = model.Username, Email = model.Email, UserBasket = new Basket() {BasketItems = new List<BasketItem>(), CreatedAt = DateTime.Now } };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

@@ -13,10 +13,10 @@ namespace _1likteEcommerce.Api.Controllers
     {
         private readonly IBasketService _basketService;
         private string userId = string.Empty;
-        public BasketController(IBasketService basketService)
+        public BasketController(IBasketService basketService, IHttpContextAccessor httpContextAccessor)
         {
             _basketService = basketService;
-            var userId = User.Claims.Where(a => a.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value ?? string.Empty;
+            userId = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         }
 
         [HttpPost("add-product")]
@@ -39,7 +39,7 @@ namespace _1likteEcommerce.Api.Controllers
                 await _basketService.RemoveProductFromBasketAsync(userId, model);
                 return Ok("product removed from the basket");
             }
-
+             
             return BadRequest(ModelState);
         }
 

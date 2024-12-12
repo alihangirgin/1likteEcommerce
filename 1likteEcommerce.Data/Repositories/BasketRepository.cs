@@ -19,5 +19,10 @@ namespace _1likteEcommerce.Data.Repositories
         {
             return await _dbSet.Include(x=> x.BasketItems).FirstOrDefaultAsync(x => x.UserId == userId);
         }
+
+        public async Task<Basket?> GetBasketWithProductsByUserId(string userId)
+        {
+            return await _dbSet.Include(x => x.BasketItems).ThenInclude(x=> x.Product).FirstOrDefaultAsync(x => x.UserId == userId);
+        }
     }
 }

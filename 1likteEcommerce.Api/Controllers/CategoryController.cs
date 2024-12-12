@@ -22,7 +22,8 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _categoryService.AddCategoryAsync(model);
+                var result = await _categoryService.AddCategoryAsync(model);
+                if (!result) return BadRequest("category cannot created");
                 return Ok("category created");
             }
 
@@ -34,8 +35,9 @@ namespace _1likteEcommerce.Api.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _categoryService.UpdateCategoryAsync(categoryId, model);
-                return Ok("category created");
+                var result = await _categoryService.UpdateCategoryAsync(categoryId, model);
+                if (!result) return BadRequest("category cannot updated");
+                return Ok("category updated");
             }
 
             return BadRequest(ModelState);
@@ -44,7 +46,8 @@ namespace _1likteEcommerce.Api.Controllers
         [HttpDelete("{categoryId}")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
         {
-            await _categoryService.DeleteCategoryAsync(categoryId);
+            var result = await _categoryService.DeleteCategoryAsync(categoryId);
+            if (!result) return BadRequest("product cannot deleted");
             return Ok("category deleted");
         }
 
@@ -52,7 +55,7 @@ namespace _1likteEcommerce.Api.Controllers
         public async Task<IActionResult> GetCategory(int categoryId)
         {
             var category = await _categoryService.GetCategoryAsync(categoryId);
-            if(category == null)
+            if (category == null)
                 return NotFound("category not found");
             return Ok(category);
         }
