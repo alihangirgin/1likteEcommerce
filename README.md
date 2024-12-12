@@ -12,7 +12,7 @@ Api controllerların sunum katmanıdır. Api'dan gelen requestler göre Business
 - Presentation (1likteEcommerce.Api) -> Business (1likteEcommerce.Business) -> Data Access (1likteEcommerce.Data) --> Database
 - Presentation (1likteEcommerce.Api) <- Business (1likteEcommerce.Business) <- Data Access (1likteEcommerce.Data) <-- Database
 ### Database Design
-Veritabanı oluşturulurken Entity Framework Code-First yaklaşımı kullanıldı. Repository Pattern olabildiğince Generic yapılmaya çalışıldı. Crud işlemleri UnitOfWork class üzerinden yapıldı.
+Veritabanı oluşturulurken Entity Framework Code-First yaklaşımı kullanıldı. Crud işlemleri Repository Pattern ile UnitOfWork class üzerinden yapıldı.
 - DbContext-> 1likteEcommerce.Data.DataAccess
 - Models(Entities) -> 1likteEcommerce.Core.Models
 - Repository-> 1likteEcommerce.Data.Repositories
