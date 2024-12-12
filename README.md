@@ -60,6 +60,9 @@ Veritabanı oluşturulurken Entity Framework Code-First yaklaşımı kullanıld�
 ### Authorization
 Login isteği ile Bearer Token alınıp, istekler Bearer Token ile gönderilmelidir. Bearer Token olarak JWT kullandım.
 
+### Unit Test
+Xunit ve Moq kütüphanesi kullanım. Unit Test class'lar 1likteEcommerce.Api.UnitTests içerisinde
+
 <h2>Docker</h2>
 
 PostgreDb Docker'da ayakta olmalıdır.
